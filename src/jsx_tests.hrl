@@ -134,6 +134,7 @@ floats() ->
 
 
 naked_literals() ->
+  [{"undefined", <<"null">>, undefined, [{literal, null}]}|
     [
         {
             atom_to_list(Literal),
@@ -142,7 +143,7 @@ naked_literals() ->
             [{literal, Literal}]
         }
         || Literal <- [true, false, null]
-    ].
+    ]].
 
 literals() ->
     naked_literals()
