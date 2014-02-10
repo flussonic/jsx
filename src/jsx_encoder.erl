@@ -65,6 +65,8 @@ value(Float, {Handler, State}, _Config) when is_float(Float) ->
     Handler:handle_event({float, Float}, State);
 value(Int, {Handler, State}, _Config) when is_integer(Int) ->
     Handler:handle_event({integer, Int}, State);
+value(undefined, {Handler, State}, Config) ->
+    Handler:handle_event({literal, null}, State);
 value(Literal, {Handler, State}, _Config)
         when Literal == true; Literal == false; Literal == null ->
     Handler:handle_event({literal, Literal}, State);
@@ -163,7 +165,7 @@ encode(Term, Config) -> start(Term, {jsx, []}, jsx_config:parse_config(Config)).
 pre_encoders_test_() ->
     Term = [
         {<<"object">>, [
-            {<<"literals">>, [true, false, null]},
+            {<<"literals">>, [true, false, null, undefined]},
             {<<"strings">>, [<<"foo">>, <<"bar">>, <<"baz">>]},
             {<<"numbers">>, [1, 1.0, 1.0e0]}
         ]}
@@ -174,7 +176,7 @@ pre_encoders_test_() ->
                 start_object,
                     {key, <<"object">>}, start_object,
                         {key, <<"literals">>}, start_array,
-                            {literal, true}, {literal, false}, {literal, null},
+                            {literal, true}, {literal, false}, {literal, null}, {literal, null},
                         end_array,
                         {key, <<"strings">>}, start_array,
                             {string, <<"foo">>}, {string, <<"bar">>}, {string, <<"baz">>},
@@ -214,7 +216,7 @@ pre_encoders_test_() ->
                 start_object,
                     {key, <<"object">>}, start_object,
                         {key, <<"literals">>}, start_array,
-                            {literal, false}, {literal, false}, {literal, false},
+                            {literal, false}, {literal, false}, {literal, false}, {literal, false},
                         end_array,
                         {key, <<"strings">>}, start_array,
                             {literal, false}, {literal, false}, {literal, false},
@@ -233,7 +235,7 @@ pre_encoders_test_() ->
                 start_object,
                     {key, <<"object">>}, start_object,
                         {key, <<"literals">>}, start_array,
-                            {string, <<"true">>}, {string, <<"false">>}, {string, <<"null">>},
+                            {string, <<"true">>}, {string, <<"false">>}, {string, <<"null">>},  {string, <<"undefined">>},
                         end_array,
                         {key, <<"strings">>}, start_array,
                             {string, <<"foo">>}, {string, <<"bar">>}, {string, <<"baz">>},
