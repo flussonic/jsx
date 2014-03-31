@@ -70,6 +70,8 @@ value(undefined, {Handler, State}, Config) ->
 value(Literal, {Handler, State}, _Config)
         when Literal == true; Literal == false; Literal == null ->
     Handler:handle_event({literal, Literal}, State);
+value(String, {Handler, State}, Config) when is_atom(String) ->
+    Handler:handle_event({string, clean_string(atom_to_binary(String,latin1), {Handler, State}, Config)}, State);
 value([{}], {Handler, State}, _Config) ->
     Handler:handle_event(end_object, Handler:handle_event(start_object, State));
 value([], {Handler, State}, _Config) ->
@@ -165,6 +167,7 @@ encode(Term, Config) -> start(Term, {jsx, []}, jsx_config:parse_config(Config)).
 pre_encoders_test_() ->
     Term = [
         {<<"object">>, [
+            {atomkey, atomvalue},
             {<<"literals">>, [true, false, null, undefined]},
             {<<"strings">>, [<<"foo">>, <<"bar">>, <<"baz">>]},
             {<<"numbers">>, [1, 1.0, 1.0e0]}
@@ -175,6 +178,7 @@ pre_encoders_test_() ->
             [
                 start_object,
                     {key, <<"object">>}, start_object,
+                        {key, <<"atomkey">>}, {string, <<"atomvalue">>},
                         {key, <<"literals">>}, start_array,
                             {literal, true}, {literal, false}, {literal, null}, {literal, null},
                         end_array,
@@ -194,6 +198,7 @@ pre_encoders_test_() ->
             [
                 start_object,
                     {key, <<"object">>}, start_object,
+                        {key, <<"atomkey">>}, {string, <<"atomvalue">>},
                         {key, <<"literals">>}, start_array, end_array,
                         {key, <<"strings">>}, start_array, end_array,
                         {key, <<"numbers">>}, start_array, end_array,
@@ -215,6 +220,7 @@ pre_encoders_test_() ->
             [
                 start_object,
                     {key, <<"object">>}, start_object,
+                        {key, <<"atomkey">>}, {literal,false},
                         {key, <<"literals">>}, start_array,
                             {literal, false}, {literal, false}, {literal, false}, {literal, false},
                         end_array,
@@ -234,6 +240,7 @@ pre_encoders_test_() ->
             [
                 start_object,
                     {key, <<"object">>}, start_object,
+                        {key, <<"atomkey">>}, {string, <<"atomvalue">>},
                         {key, <<"literals">>}, start_array,
                             {string, <<"true">>}, {string, <<"false">>}, {string, <<"null">>},  {string, <<"undefined">>},
                         end_array,
