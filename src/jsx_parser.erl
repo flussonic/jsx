@@ -99,6 +99,8 @@ value([false|Tokens], Handler, Stack, Config) ->
     maybe_done(Tokens, handle_event({literal, false}, Handler, Config), Stack, Config);
 value([null|Tokens], Handler, Stack, Config) ->
     maybe_done(Tokens, handle_event({literal, null}, Handler, Config), Stack, Config);
+value([undefined|Tokens], Handler, Stack, Config) ->
+    maybe_done(Tokens, handle_event({literal, null}, Handler, Config), Stack, Config);
 value([start_object|Tokens], Handler, Stack, Config) ->
     object(Tokens, handle_event(start_object, Handler, Config), [object|Stack], Config);
 value([start_array|Tokens], Handler, Stack, Config) ->
