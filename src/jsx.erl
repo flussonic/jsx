@@ -41,6 +41,9 @@
 -export([init/1, handle_event/2]).
 -endif.
 
+-ifndef(maps_support).
+-define(maps_support,true).
+-endif.
 
 -ifndef(maps_support).
 -type json_term() :: [{binary() | atom(), json_term()}] | [{}]

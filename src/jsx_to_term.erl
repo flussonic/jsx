@@ -35,6 +35,10 @@
     get_value/1
 ]).
 
+-ifndef(maps_support).
+-define(maps_support,true).
+-endif.
+
 
 -record(config, {
     labels = binary,

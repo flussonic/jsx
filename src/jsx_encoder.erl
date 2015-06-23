@@ -25,6 +25,11 @@
 
 -export([encoder/3, encode/1, encode/2]).
 
+-ifndef(maps_support).
+-define(maps_support,true).
+-endif.
+
+
 -spec encoder(Handler::module(), State::any(), Config::list()) -> jsx:encoder().
 
 encoder(Handler, State, Config) ->
